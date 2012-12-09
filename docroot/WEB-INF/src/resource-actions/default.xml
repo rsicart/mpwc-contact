@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resource-action-mapping>
+
+	<portlet-resource>
+		<portlet-name>contactportlet</portlet-name>
+		<permissions>
+			<supports>
+				<action-key>ADD_CONTACT</action-key>
+				<action-key>UPDATE_CONTACT</action-key>
+				<action-key>DELETE_CONTACT</action-key>
+				<action-key>ADD_CONTACT_PROJECT</action-key>
+				<action-key>DELETE_CONTACT_PROJECT</action-key>
+				<action-key>VIEW</action-key>
+			</supports>
+			<site-member-defaults>
+				<action-key>VIEW</action-key>
+			</site-member-defaults>
+			
+			<guest-defaults>
+				<action-key>VIEW</action-key>
+			</guest-defaults>
+			
+			<guest-unsupported>
+				<action-key>ADD_CONTACT</action-key>
+				<action-key>UPDATE_CONTACT</action-key>
+				<action-key>DELETE_CONTACT</action-key>
+				<action-key>ADD_CONTACT_PROJECT</action-key>
+				<action-key>DELETE_CONTACT_PROJECT</action-key>
+			</guest-unsupported>
+		</permissions>
+	</portlet-resource>
+	
+	<model-resource>
+		<model-name>com.mpwc.model.Contacto</model-name>
+		<portlet-ref>
+			<portlet-name>contactportlet</portlet-name>
+		</portlet-ref>
+		
+		<permissions>
+			<supports>
+				<action-key>DELETE</action-key>
+				<action-key>PERMISSIONS</action-key>
+				<action-key>UPDATE</action-key>
+				<action-key>VIEW</action-key>
+			</supports>
+			<site-member-defaults>
+				<action-key>VIEW</action-key>
+			</site-member-defaults>
+			
+			<guest-defaults>
+				<action-key>VIEW</action-key>
+			</guest-defaults>
+			
+			<guest-unsupported>
+				<action-key>DELETE</action-key>
+				<action-key>PERMISSIONS</action-key>
+				<action-key>UPDATE</action-key>
+			</guest-unsupported>
+		</permissions>
+	</model-resource>
+
+</resource-action-mapping>
