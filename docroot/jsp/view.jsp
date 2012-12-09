@@ -111,7 +111,7 @@ POSSIBILITY OF SUCH DAMAGE.
 	   <portlet:param name="mvcPath" value="/jsp/add.jsp" />
 	</portlet:renderURL>
 	
-	<portlet:actionURL var="filterURL" name="getContactsByFilters">
+	<portlet:actionURL var="filterURL" name="getContactosByFilters">
 	   <portlet:param name="mvcPath" value="/jsp/view.jsp" />
 	</portlet:actionURL>
 	
@@ -209,7 +209,7 @@ POSSIBILITY OF SUCH DAMAGE.
 	<liferay-ui:search-container-results>
 	<% 
 		//List<Contact> tempResults = WorkerLocalServiceUtil.getWorkersByFilters(ftrDesc, ftrNif, ftrName, ftrSurname, ftrEmail, ftrPhone);
-		List<Contacto> tempResults = ContactoLocalServiceUtil.getContactos(0, 10);
+		List<Contacto> tempResults = ContactoLocalServiceUtil.getContactosByFilters(ftrDesc, ftrNif, ftrFirmname, ftrEmail, ftrPhone, ftrCity, ftrCountry, ftrAddress, ftrZipcode);
 		results = ListUtil.subList(tempResults, searchContainer.getStart(),searchContainer.getEnd());
 		total = tempResults.size();
 		pageContext.setAttribute("results", results);
@@ -217,7 +217,7 @@ POSSIBILITY OF SUCH DAMAGE.
 	 %>	
 	 </liferay-ui:search-container-results>
 	 
-	 <liferay-ui:search-container-row className="com.mpwc.model.Contacto" keyProperty="contactId" modelVar="contacto">
+	 <liferay-ui:search-container-row className="com.mpwc.model.Contacto" keyProperty="contactoId" modelVar="contacto">
 	 	<liferay-ui:search-container-column-text name="Firm Name" property="firmname" />
 	 	<liferay-ui:search-container-column-text name="Address" property="address" />
 	 	<liferay-ui:search-container-column-text name="Nif" property="nif" />

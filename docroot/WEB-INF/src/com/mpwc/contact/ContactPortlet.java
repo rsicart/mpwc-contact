@@ -44,6 +44,7 @@ import java.util.Date;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
+import javax.portlet.PortletSession;
 
 import com.liferay.counter.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -89,13 +90,13 @@ public class ContactPortlet extends MVCPortlet {
      		
  	    	Contacto c;
  			try {
- 				long contactId = CounterLocalServiceUtil.increment(Contacto.class.getName());
- 				c = ContactoLocalServiceUtil.createContacto(contactId);
+ 				long contactoId = CounterLocalServiceUtil.increment(Contacto.class.getName());
+ 				c = ContactoLocalServiceUtil.createContacto(contactoId);
  				c.setFirmname(firmname);
  		    	c.setNif(nif);
  		    	c.setEmail(email);
  		    	if( phone != null && !phone.isEmpty() ){ c.setPhone(phone); }
- 		    	if( status > 0 ){ c.setContactStatusId(status); }
+ 		    	if( status > 0 ){ c.setContactoStatusId(status); }
  		    	if( comments != null && !comments.isEmpty() ){ c.setComments(comments); }
  		    	c.setCity(city);
  		    	c.setCountry(country);
@@ -127,7 +128,7 @@ public class ContactPortlet extends MVCPortlet {
    public void editContact(ActionRequest actionRequest, ActionResponse actionResponse)
  	       throws IOException, PortletException {
  	
-	 	long contactId = Long.valueOf( actionRequest.getParameter("contactId") );
+	 	long contactoId = Long.valueOf( actionRequest.getParameter("contactoId") );
 	 	String firmname = actionRequest.getParameter("firmname");
 	 	String nif = actionRequest.getParameter("nif");
 	 	String email = actionRequest.getParameter("email");
@@ -142,16 +143,16 @@ public class ContactPortlet extends MVCPortlet {
 	 	
 	 	Date now = new Date();
 	 	
-	 	if( contactId > 0 ){
+	 	if( contactoId > 0 ){
 	 		
 		    	Contacto c;
 				try {			
-					c = ContactoLocalServiceUtil.getContacto(contactId);
+					c = ContactoLocalServiceUtil.getContacto(contactoId);
 					if( firmname != null && !firmname.isEmpty() ){ c.setFirmname(firmname); }
 					if( nif != null && !nif.isEmpty() ){ c.setNif(nif); }
 					if( email != null && !email.isEmpty() && email.indexOf("@") > 0 ){ c.setEmail(email); }
 			    	if( phone != null && !phone.isEmpty() ){ c.setPhone(phone); }
-			    	if( status > 0 ){ c.setContactStatusId(status); }
+			    	if( status > 0 ){ c.setContactoStatusId(status); }
 			    	if( comments != null && !comments.isEmpty() ){ c.setComments(comments); }
 			    	if( city != null && !city.isEmpty() ){ c.setCity(city); }
 			    	if( country != null && !country.isEmpty() ){ c.setCountry(country); }
@@ -176,11 +177,11 @@ public class ContactPortlet extends MVCPortlet {
    public void deleteContact(ActionRequest actionRequest, ActionResponse actionResponse)
   	       throws IOException, PortletException, PortalException, SystemException {
      	
- 	 	long contactId = Long.valueOf( actionRequest.getParameter("contactId") );
+ 	 	long contactoId = Long.valueOf( actionRequest.getParameter("contactoId") );
  	 	
- 	 	if( contactId > 0 ){
+ 	 	if( contactoId > 0 ){
  			try{
- 				ContactoLocalServiceUtil.deleteContacto(contactId);
+ 				ContactoLocalServiceUtil.deleteContacto(contactoId);
  			} catch (SystemException e) {
  				System.out.println("deleteContact exception:" + e.getMessage());
  			}
@@ -191,5 +192,37 @@ public class ContactPortlet extends MVCPortlet {
  	 	actionResponse.sendRedirect(redirectURL);
 
      }
+   
+   public void getContactosByFilters(ActionRequest actionRequest, ActionResponse actionResponse)
+ 	       throws IOException, PortletException{
+	 try{
+			//get params
+			String desc = actionRequest.getParameter("ftrdesc");
+			String nif = actionRequest.getParameter("ftrnif");
+			String firmname = actionRequest.getParameter("ftrfirmname");
+			String email = actionRequest.getParameter("ftremail");
+			String phone = actionRequest.getParameter("ftrphone");
+	     	String city = actionRequest.getParameter("ftrcity");
+	     	String country = actionRequest.getParameter("ftrcountry");
+	     	String address = actionRequest.getParameter("ftraddress");
+	     	String zipcode = actionRequest.getParameter("ftrzipcode");
+			
+			System.out.println("getContactosByFilters params-> desc:"+desc+" - nif:"+nif+" - firmname:"+firmname+" - email:"+email+" - phone:"+phone+" - city:"+city+" - country:"+country+" - address:"+address+" - zipcode:"+zipcode);
+			
+			//set session params
+			actionRequest.getPortletSession().setAttribute("ftrDesc", desc, PortletSession.PORTLET_SCOPE);
+			actionRequest.getPortletSession().setAttribute("ftrNif", nif, PortletSession.PORTLET_SCOPE);
+			actionRequest.getPortletSession().setAttribute("ftrFirmname", firmname, PortletSession.PORTLET_SCOPE);
+			actionRequest.getPortletSession().setAttribute("ftrEmail", email, PortletSession.PORTLET_SCOPE);
+			actionRequest.getPortletSession().setAttribute("ftrPhone", phone, PortletSession.PORTLET_SCOPE);
+			actionRequest.getPortletSession().setAttribute("ftrCity", city, PortletSession.PORTLET_SCOPE);
+			actionRequest.getPortletSession().setAttribute("ftrCountry", country, PortletSession.PORTLET_SCOPE);
+			actionRequest.getPortletSession().setAttribute("ftrAddress", address, PortletSession.PORTLET_SCOPE);
+			actionRequest.getPortletSession().setAttribute("ftrZipcode", zipcode, PortletSession.PORTLET_SCOPE);
+			
+	 } catch (Exception e) {
+     		System.out.println("Action getWorkersByFilters Error: " + e.getMessage() );
+     }
+ }
 
 }
