@@ -47,36 +47,17 @@ String country = locale.getCountry();
 
 ResourceBundle res = ResourceBundle.getBundle("content.Language-ext", new Locale(language, country));
 
-String name = "";
-String surname = "";
-String email = "";
-long userId = Long.valueOf(request.getParameter("liferayUserId"));
-
-try{
-	User lfUser = UserLocalServiceUtil.getUser(userId);
-	
-	if(lfUser != null){
-		name = lfUser.getFirstName();
-		surname = lfUser.getLastName();
-		email = lfUser.getEmailAddress();
-	}
-	
-} catch(Exception e){
-	System.out.println("Error add.jsp: wrong userId"+e.getMessage());
-}
-
 %>
 
 <h1 class="cooler-label"><b><%= res.getString("jspadd.maintitle") %></b></h1>
 
-<portlet:actionURL var="addWorkerURL" name="addWorker">
+<portlet:actionURL var="addContactURL" name="addContact">
     <portlet:param name="mvcPath" value="/jsp/view.jsp" />
 </portlet:actionURL>
 
-<aui:form name="frm_add_worker" action="<%= addWorkerURL %>" method="post">
+<aui:form name="frm_add_worker" action="<%= addContactURL %>" method="post">
 	
 	<aui:input type="hidden" name="redirectURL" value="<%= renderResponse.createRenderURL().toString() %>"/>
-	<aui:input type="hidden" name="liferayUserId" value="<%= userId %>"/>
 
 	<aui:layout>
  		
@@ -84,26 +65,53 @@ try{
  	
  		<aui:fieldset>
 
-			<aui:input label='<%= res.getString("formlabel.name") %>' name="name" type="text" value="<%= name %>">
+			<aui:input label='<%= res.getString("formlabel.firmname") %>' name="firmname" type="text" value="">
 				<aui:validator name="required" />
-				<!-- Only allow alphabetical characters -->
-	     		<aui:validator name="alpha" />
+				<aui:validator name="custom" errorMessage="error-character-not-valid">
+				    function(val, fieldNode, ruleValue) { var patt=/[a-zA-Z0-9 ,'-]{1,100}/g; return (patt.test(val) ) }
+				</aui:validator>
 			</aui:input>
-	
-		    <aui:input label='<%= res.getString("formlabel.surname") %>' name="surname" type="text" value="<%= surname %>">
+			
+			<aui:input label='<%= res.getString("formlabel.city") %>' name="city" type="text" value="">
 		    	<aui:validator name="required" />
-				<!-- Only allow alphabetical characters -->
-	     		<aui:validator name="alpha" />
+				<aui:validator name="custom" errorMessage="error-character-not-valid">
+				    function(val, fieldNode, ruleValue) { var patt=/[a-zA-Z0-9 ,'-]{1,100}/g; return (patt.test(val) ) }
+				</aui:validator>
 		    </aui:input>
+		    
+		    <aui:input label='<%= res.getString("formlabel.country") %>' name="country" type="text" value="">
+		    	<aui:validator name="required" />
+				<aui:validator name="custom" errorMessage="error-character-not-valid">
+				    function(val, fieldNode, ruleValue) { var patt=/[a-zA-Z0-9 ,'-]{1,100}/g; return (patt.test(val) ) }
+				</aui:validator>
+		    </aui:input>
+		    
+		    <aui:input label='<%= res.getString("formlabel.address") %>' name="address" type="text" value="">
+		    	<aui:validator name="required" />
+				<aui:validator name="custom" errorMessage="error-character-not-valid">
+				    function(val, fieldNode, ruleValue) { var patt=/[a-zA-Z0-9 ,'-]{1,100}/g; return (patt.test(val) ) }
+				</aui:validator>
+		    </aui:input>
+		    
+		    <aui:input label='<%= res.getString("formlabel.zipcode") %>' name="zipcode" type="text" value="" >
+				<!-- Only allow numeric format -->
+	     		<aui:validator name="digits" />
+			</aui:input>
 	
 			<aui:input label='<%= res.getString("formlabel.phone") %>' name="phone" type="text" value="" >
 				<!-- Only allow numeric format -->
 	     		<aui:validator name="digits" />
 			</aui:input>
 			
+			<aui:input label='<%= res.getString("formlabel.phone2") %>' name="phone2" type="text" value="" >
+				<!-- Only allow numeric format -->
+	     		<aui:validator name="digits" />
+			</aui:input>
+			
 	   		<aui:input type="textarea" name="comments" value="" >
-				<!-- Only allow alphanumeric format -->
-	     		<aui:validator name="alphanum" />
+				<aui:validator name="custom" errorMessage="error-character-not-valid">
+				    function(val, fieldNode, ruleValue) { var patt=/[a-zA-Z0-9 ,'-]{1,100}/g; return (patt.test(val) ) }
+				</aui:validator>
 			</aui:input>
 			
 		</aui:fieldset>
@@ -120,7 +128,7 @@ try{
 	     		<aui:validator name="alphanum" />	     		
 			</aui:input>
 			
-		    <aui:input label='<%= res.getString("formlabel.email") %>' name="email" type="text" value="<%= email %>" >
+		    <aui:input label='<%= res.getString("formlabel.email") %>' name="email" type="text" value="" >
 				<aui:validator name="required" />
 				<!-- Only allow email format -->
 	     		<aui:validator name="email" />
