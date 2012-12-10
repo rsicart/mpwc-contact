@@ -67,6 +67,7 @@ POSSIBILITY OF SUCH DAMAGE.
  String ftrCountry = "";
  String ftrZipcode = "";
  String ftrAddress = "";
+ String ftrCtype = "";
 
  
  Enumeration<String> sessionParams = request.getSession().getAttributeNames();
@@ -99,6 +100,9 @@ POSSIBILITY OF SUCH DAMAGE.
 	 }
 	 if(decodedName.equals("ftrZipcode") && PortletSessionUtil.decodeScope(attributeName)==PortletSession.PORTLET_SCOPE){
 		 ftrZipcode = (String)session.getAttribute(attributeName);
+	 }
+	 if(decodedName.equals("ftrCtype") && PortletSessionUtil.decodeScope(attributeName)==PortletSession.PORTLET_SCOPE){
+		 ftrCtype = (String)session.getAttribute(attributeName);
 	 }
  }
  
@@ -190,7 +194,25 @@ POSSIBILITY OF SUCH DAMAGE.
 		
 		<aui:column columnWidth="20" last="true">
 		<aui:fieldset>
-			<aui:button type="submit" id="btn_filter" value='<%= res.getString("formlabel.actionfilter") %>' />
+			<aui:select label='<%= res.getString("formlabel.projecttype") %>' id="ftrctype" name="ftrctype">
+				<aui:option value="">
+					<liferay-ui:message key="please-choose" />
+				</aui:option>
+				<aui:option value="customer" selected='<%= ( ftrCtype != null && ftrCtype.equals("customer") ? true : false ) %>'>
+					<liferay-ui:message key="form-option-type-customer" />
+				</aui:option>
+				<aui:option value="provider" selected='<%= ( ftrCtype != null && ftrCtype.equals("provider") ? true : false ) %>'>
+					<liferay-ui:message key="form-option-type-provider" />
+				</aui:option>
+			</aui:select>
+			
+			<aui:button-row>
+				<aui:button type="submit" id="btn_filter" value='<%= res.getString("formlabel.actionfilter") %>' />
+				<c:if test="<%= permissionChecker.hasPermission(groupId, namePortlet, primKeyPortlet, permAddContact) %>">
+					<aui:button type="button" name="btn_add" value='<%= res.getString("formlabel.actionadd") %>' onClick="<%= addContactURL.toString() %>" />
+				</c:if>
+			</aui:button-row>
+			
 		</aui:fieldset>
 		</aui:column>
 			
@@ -209,7 +231,7 @@ POSSIBILITY OF SUCH DAMAGE.
 	<liferay-ui:search-container-results>
 	<% 
 		//List<Contact> tempResults = WorkerLocalServiceUtil.getWorkersByFilters(ftrDesc, ftrNif, ftrName, ftrSurname, ftrEmail, ftrPhone);
-		List<Contacto> tempResults = ContactoLocalServiceUtil.getContactosByFilters(ftrDesc, ftrNif, ftrFirmname, ftrEmail, ftrPhone, ftrCity, ftrCountry, ftrAddress, ftrZipcode);
+		List<Contacto> tempResults = ContactoLocalServiceUtil.getContactosByFilters(ftrDesc, ftrNif, ftrFirmname, ftrEmail, ftrPhone, ftrCity, ftrCountry, ftrAddress, ftrZipcode, ftrCtype);
 		results = ListUtil.subList(tempResults, searchContainer.getStart(),searchContainer.getEnd());
 		total = tempResults.size();
 		pageContext.setAttribute("results", results);
@@ -242,18 +264,6 @@ POSSIBILITY OF SUCH DAMAGE.
  	<aui:layout>	
  	
  	<aui:column columnWidth="20" last="true">
- 	
- 		<aui:form name="frm_add_contacts" action="<%= addContactURL %>" method="post">
- 	
-	 	<aui:fieldset>
-	 	
-	 	<c:if test="<%= permissionChecker.hasPermission(groupId, namePortlet, primKeyPortlet, permAddContact) %>">
-	 		<aui:button type="submit" id="btn_add" value='<%= res.getString("formlabel.actionadd") %>' inlineField="false" />
-	 	</c:if> 	
-	 	
-	 	</aui:fieldset>
-	 	
-	 	</aui:form>	
  	
  	</aui:column>
  	

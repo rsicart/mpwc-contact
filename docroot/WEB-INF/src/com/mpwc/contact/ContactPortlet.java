@@ -76,6 +76,7 @@ public class ContactPortlet extends MVCPortlet {
      	String country = actionRequest.getParameter("country");
      	String address = actionRequest.getParameter("address");
      	String zipcode = actionRequest.getParameter("zipcode");
+     	String ctype = actionRequest.getParameter("ctype");
      	
      	Date now = new Date();
      	
@@ -85,7 +86,8 @@ public class ContactPortlet extends MVCPortlet {
      			city != null && !city.isEmpty() &&
      			country != null && !country.isEmpty() &&
      			address != null && !address.isEmpty() &&
-     			zipcode != null && !zipcode.isEmpty()
+     			zipcode != null && !zipcode.isEmpty() &&
+     			ctype != null && !ctype.isEmpty()
      		){
      		
  	    	Contacto c;
@@ -102,6 +104,7 @@ public class ContactPortlet extends MVCPortlet {
  		    	c.setCountry(country);
  		    	c.setAddress(address);
  		    	c.setZipcode(zipcode);
+ 		    	c.setCtype(ctype);
  		    	if( phone2 != null && !phone2.isEmpty() ){ c.setPhone2(phone2); }
  		    	c.setCreateDate(now);
  		    	
@@ -140,6 +143,7 @@ public class ContactPortlet extends MVCPortlet {
 	 	String country = actionRequest.getParameter("country");
 	 	String address = actionRequest.getParameter("address");
 	 	String zipcode = actionRequest.getParameter("zipcode");
+	 	String ctype = actionRequest.getParameter("ctype");
 	 	
 	 	Date now = new Date();
 	 	
@@ -158,6 +162,7 @@ public class ContactPortlet extends MVCPortlet {
 			    	if( country != null && !country.isEmpty() ){ c.setCountry(country); }
 			    	if( address != null && !address.isEmpty() ){ c.setAddress(address); }
 			    	if( zipcode != null && !zipcode.isEmpty() ){ c.setZipcode(zipcode); }
+			    	if( ctype != null && !ctype.isEmpty() ){ c.setCtype(ctype); }
 			    	if( phone2 != null && !phone2.isEmpty() ){ c.setPhone2(phone2); }
 			    	c.setModifiedDate(now);
 			    	ContactoLocalServiceUtil.updateContacto(c);
@@ -206,8 +211,9 @@ public class ContactPortlet extends MVCPortlet {
 	     	String country = actionRequest.getParameter("ftrcountry");
 	     	String address = actionRequest.getParameter("ftraddress");
 	     	String zipcode = actionRequest.getParameter("ftrzipcode");
+	     	String ctype = actionRequest.getParameter("ftrctype");
 			
-			System.out.println("getContactosByFilters params-> desc:"+desc+" - nif:"+nif+" - firmname:"+firmname+" - email:"+email+" - phone:"+phone+" - city:"+city+" - country:"+country+" - address:"+address+" - zipcode:"+zipcode);
+			System.out.println("getContactosByFilters params-> desc:"+desc+" - nif:"+nif+" - firmname:"+firmname+" - email:"+email+" - phone:"+phone+" - city:"+city+" - country:"+country+" - address:"+address+" - zipcode:"+zipcode+" - ctype:"+ctype);
 			
 			//set session params
 			actionRequest.getPortletSession().setAttribute("ftrDesc", desc, PortletSession.PORTLET_SCOPE);
@@ -219,9 +225,10 @@ public class ContactPortlet extends MVCPortlet {
 			actionRequest.getPortletSession().setAttribute("ftrCountry", country, PortletSession.PORTLET_SCOPE);
 			actionRequest.getPortletSession().setAttribute("ftrAddress", address, PortletSession.PORTLET_SCOPE);
 			actionRequest.getPortletSession().setAttribute("ftrZipcode", zipcode, PortletSession.PORTLET_SCOPE);
+			actionRequest.getPortletSession().setAttribute("ftrCtype", ctype, PortletSession.PORTLET_SCOPE);
 			
 	 } catch (Exception e) {
-     		System.out.println("Action getWorkersByFilters Error: " + e.getMessage() );
+     		System.out.println("Action getContactosByFilters Error: " + e.getMessage() );
      }
  }
 
