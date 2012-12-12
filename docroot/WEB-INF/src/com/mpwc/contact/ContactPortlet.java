@@ -53,7 +53,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 import com.mpwc.model.Contacto;
+import com.mpwc.model.Project;
 import com.mpwc.service.ContactoLocalServiceUtil;
+import com.mpwc.service.ProjectLocalServiceUtil;
 
 /**
  * Portlet implementation class ContactPortlet
@@ -201,35 +203,78 @@ public class ContactPortlet extends MVCPortlet {
    public void getContactosByFilters(ActionRequest actionRequest, ActionResponse actionResponse)
  	       throws IOException, PortletException{
 	 try{
-			//get params
-			String desc = actionRequest.getParameter("ftrdesc");
-			String nif = actionRequest.getParameter("ftrnif");
-			String firmname = actionRequest.getParameter("ftrfirmname");
-			String email = actionRequest.getParameter("ftremail");
-			String phone = actionRequest.getParameter("ftrphone");
-	     	String city = actionRequest.getParameter("ftrcity");
-	     	String country = actionRequest.getParameter("ftrcountry");
-	     	String address = actionRequest.getParameter("ftraddress");
-	     	String zipcode = actionRequest.getParameter("ftrzipcode");
-	     	String ctype = actionRequest.getParameter("ftrctype");
-			
-			System.out.println("getContactosByFilters params-> desc:"+desc+" - nif:"+nif+" - firmname:"+firmname+" - email:"+email+" - phone:"+phone+" - city:"+city+" - country:"+country+" - address:"+address+" - zipcode:"+zipcode+" - ctype:"+ctype);
-			
-			//set session params
-			actionRequest.getPortletSession().setAttribute("ftrDesc", desc, PortletSession.PORTLET_SCOPE);
-			actionRequest.getPortletSession().setAttribute("ftrNif", nif, PortletSession.PORTLET_SCOPE);
-			actionRequest.getPortletSession().setAttribute("ftrFirmname", firmname, PortletSession.PORTLET_SCOPE);
-			actionRequest.getPortletSession().setAttribute("ftrEmail", email, PortletSession.PORTLET_SCOPE);
-			actionRequest.getPortletSession().setAttribute("ftrPhone", phone, PortletSession.PORTLET_SCOPE);
-			actionRequest.getPortletSession().setAttribute("ftrCity", city, PortletSession.PORTLET_SCOPE);
-			actionRequest.getPortletSession().setAttribute("ftrCountry", country, PortletSession.PORTLET_SCOPE);
-			actionRequest.getPortletSession().setAttribute("ftrAddress", address, PortletSession.PORTLET_SCOPE);
-			actionRequest.getPortletSession().setAttribute("ftrZipcode", zipcode, PortletSession.PORTLET_SCOPE);
-			actionRequest.getPortletSession().setAttribute("ftrCtype", ctype, PortletSession.PORTLET_SCOPE);
+		//get params
+		String desc = actionRequest.getParameter("ftrdesc");
+		String nif = actionRequest.getParameter("ftrnif");
+		String firmname = actionRequest.getParameter("ftrfirmname");
+		String email = actionRequest.getParameter("ftremail");
+		String phone = actionRequest.getParameter("ftrphone");
+     	String city = actionRequest.getParameter("ftrcity");
+     	String country = actionRequest.getParameter("ftrcountry");
+     	String address = actionRequest.getParameter("ftraddress");
+     	String zipcode = actionRequest.getParameter("ftrzipcode");
+     	String ctype = actionRequest.getParameter("ftrctype");
+		
+		System.out.println("getContactosByFilters params-> desc:"+desc+" - nif:"+nif+" - firmname:"+firmname+" - email:"+email+" - phone:"+phone+" - city:"+city+" - country:"+country+" - address:"+address+" - zipcode:"+zipcode+" - ctype:"+ctype);
+		
+		//set session params
+		actionRequest.getPortletSession().setAttribute("ftrDesc", desc, PortletSession.PORTLET_SCOPE);
+		actionRequest.getPortletSession().setAttribute("ftrNif", nif, PortletSession.PORTLET_SCOPE);
+		actionRequest.getPortletSession().setAttribute("ftrFirmname", firmname, PortletSession.PORTLET_SCOPE);
+		actionRequest.getPortletSession().setAttribute("ftrEmail", email, PortletSession.PORTLET_SCOPE);
+		actionRequest.getPortletSession().setAttribute("ftrPhone", phone, PortletSession.PORTLET_SCOPE);
+		actionRequest.getPortletSession().setAttribute("ftrCity", city, PortletSession.PORTLET_SCOPE);
+		actionRequest.getPortletSession().setAttribute("ftrCountry", country, PortletSession.PORTLET_SCOPE);
+		actionRequest.getPortletSession().setAttribute("ftrAddress", address, PortletSession.PORTLET_SCOPE);
+		actionRequest.getPortletSession().setAttribute("ftrZipcode", zipcode, PortletSession.PORTLET_SCOPE);
+		actionRequest.getPortletSession().setAttribute("ftrCtype", ctype, PortletSession.PORTLET_SCOPE);
 			
 	 } catch (Exception e) {
      		System.out.println("Action getContactosByFilters Error: " + e.getMessage() );
      }
- }
+   }
+   
+   public void addProjectContact(ActionRequest actionRequest, ActionResponse actionResponse)
+   	       throws IOException, PortletException{
+	   
+	   long contactoId = Long.valueOf( actionRequest.getParameter("contactoId") );
+	   long projectId = Long.valueOf( actionRequest.getParameter("projectId") );
+	   
+	   try {
+		   Project p = ProjectLocalServiceUtil.getProject(projectId);
+		   p.setContactoId(contactoId);
+		   ProjectLocalServiceUtil.updateProject(p);
+		   System.out.println("Action addProjectContact adding " + contactoId +" to project" + projectId );
+	   } catch (Exception e) {
+		   System.out.println("Action addProjectContact Error: " + e.getMessage() );
+	   }
+	   
+		//go to edit page
+		actionResponse.setRenderParameter("contactoId", String.valueOf(contactoId));
+		actionResponse.setRenderParameter("jspPage", "/jsp/edit.jsp");
+	   
+   }
+   
+   public void delProjectContact(ActionRequest actionRequest, ActionResponse actionResponse)
+   	       throws IOException, PortletException{
+	   
+	   long contactoId = Long.valueOf( actionRequest.getParameter("contactoId") );
+	   long projectId = Long.valueOf( actionRequest.getParameter("projectId") );
+	   
+	   try {
+		   Project p = ProjectLocalServiceUtil.getProject(projectId);
+		   if(p.getContactoId() == contactoId){
+			   p.setContactoId(0);
+			   ProjectLocalServiceUtil.updateProject(p);
+		   }
+	   } catch (Exception e) {
+		   System.out.println("Action delProjectContact Error: " + e.getMessage() );
+	   }
+	   
+		//go to edit page
+		actionResponse.setRenderParameter("contactoId", String.valueOf(contactoId));
+		actionResponse.setRenderParameter("jspPage", "/jsp/edit.jsp");
+	   
+   }
 
 }

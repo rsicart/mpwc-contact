@@ -42,39 +42,35 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <%
 ResultRow row = (ResultRow) request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
-Contacto c = (Contacto) row.getObject();
+Project p = (Project) row.getObject();
 long groupId = themeDisplay.getLayout().getGroupId();
-String name = Contacto.class.getName();
-String primKey = String.valueOf(c.getPrimaryKey());
+String name = Project.class.getName();
+String primKey = String.valueOf(p.getPrimaryKey());
+
+//portlet permissions
+String namePortlet = portletDisplay.getId(); //default value
+String primKeyPortlet = "contactportlet"; //portlet name
+
+//portlet actions available (see resource-actions/default.xml)
+String permAddContactProject = "DELETE_CONTACT_PROJECT";
+
+String contactoId = renderRequest.getParameter("contactoId");
+
+System.out.println("list_actions_edit.jsp:"+contactoId);
 %>
+
+<c:if test='<%= PortletPermissionUtil.contains(permissionChecker, portletDisplay.getId(), "DELETE_CONTACT_PROJECT") %>'>
 
 <liferay-ui:icon-menu>
 
-<c:if test='<%= PortletPermissionUtil.contains(permissionChecker, portletDisplay.getId(), "SHOW_CONTACT") %>'>
-	<portlet:renderURL var="showURL">
-		<portlet:param name="jspPage" value="/jsp/show.jsp" />
-		<portlet:param name="contactoId" value="<%=primKey %>" />
-	</portlet:renderURL>
-	
-	<liferay-ui:icon image="view" message="formlabel.actionshow" url="<%= showURL.toString() %>" />
-</c:if>
-
-<c:if test="<%= permissionChecker.hasPermission(groupId, name, primKey, ActionKeys.UPDATE) %>">
-	<portlet:renderURL var="editURL">
+	<portlet:actionURL var="delProjectContactURL" name="delProjectContact">
 		<portlet:param name="jspPage" value="/jsp/edit.jsp" />
-		<portlet:param name="contactoId" value="<%=primKey %>" />
-	</portlet:renderURL>
-	
-	<liferay-ui:icon image="edit" message="formlabel.actionedit" url="<%= editURL.toString() %>" />
-</c:if>
-
-<c:if test="<%= permissionChecker.hasPermission(groupId, name, primKey, ActionKeys.DELETE) %>">
-	<portlet:actionURL name="deleteContact" var="deleteURL">
-		<portlet:param name="contactoId" value="<%=primKey %>" />
-		<portlet:param name="redirectURL" value="<%= renderResponse.createRenderURL().toString() %>" />
+		<portlet:param name="projectId" value="<%=primKey %>" />
+		<portlet:param name="contactoId" value="<%=contactoId %>" />
 	</portlet:actionURL>
 	
-	<liferay-ui:icon-delete url="<%= deleteURL.toString() %>" message="formlabel.actiondelete" />
-</c:if>
+	<liferay-ui:icon-delete url="<%= delProjectContactURL.toString() %>" message="formlabel.actiondelete" />
 
 </liferay-ui:icon-menu>
+
+</c:if>
