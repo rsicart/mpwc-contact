@@ -143,14 +143,14 @@ ResourceBundle res = ResourceBundle.getBundle("content.Language-ext", new Locale
 				<aui:option label='<%= res.getString("formlabel.option.bloqued") %>' value="3"></aui:option>
 			</aui:select>
 			
-			<aui:select label='<%= res.getString("formlabel.projecttype") %>' id="ctype" name="ctype">
+			<aui:select label='<%= res.getString("formlabel.contacttype") %>' id="ctype" name="ctype">
 				<aui:option value="">
 					<liferay-ui:message key="please-choose" />
 				</aui:option>
-				<aui:option value="project">
+				<aui:option value="customer">
 					<liferay-ui:message key="form-option-type-customer" />
 				</aui:option>
-				<aui:option value="service">
+				<aui:option value="provider">
 					<liferay-ui:message key="form-option-type-provider" />
 				</aui:option>
 			</aui:select>

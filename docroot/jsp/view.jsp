@@ -194,7 +194,7 @@ POSSIBILITY OF SUCH DAMAGE.
 		
 		<aui:column columnWidth="20" last="true">
 		<aui:fieldset>
-			<aui:select label='<%= res.getString("formlabel.projecttype") %>' id="ftrctype" name="ftrctype">
+			<aui:select label='<%= res.getString("formlabel.contacttype") %>' id="ftrctype" name="ftrctype">
 				<aui:option value="">
 					<liferay-ui:message key="please-choose" />
 				</aui:option>
@@ -205,6 +205,15 @@ POSSIBILITY OF SUCH DAMAGE.
 					<liferay-ui:message key="form-option-type-provider" />
 				</aui:option>
 			</aui:select>
+			
+			<aui:select label='<%= res.getString("formlabel.status") %>' name="ftrdesc">
+				<aui:option value="">
+					<liferay-ui:message key="please-choose" />
+				</aui:option>
+				<aui:option label='<%= res.getString("formlabel.option.active") %>' value='<%= res.getString("formlabel.option.active") %>' selected='<%= (ftrDesc != null && ftrDesc.equals(res.getString("formlabel.option.active")) ? true : false ) %>'></aui:option>
+				<aui:option label='<%= res.getString("formlabel.option.inactive") %>' value='<%= res.getString("formlabel.option.inactive") %>' selected='<%= (ftrDesc != null && ftrDesc.equals(res.getString("formlabel.option.inactive")) ? true : false ) %>'></aui:option>
+				<aui:option label='<%= res.getString("formlabel.option.bloqued") %>' value='<%= res.getString("formlabel.option.bloqued") %>' selected='<%= (ftrDesc != null && ftrDesc.equals(res.getString("formlabel.option.bloqued")) ? true : false ) %>'></aui:option>
+			</aui:select>  
 			
 			<aui:button-row>
 				<aui:button type="submit" id="btn_filter" value='<%= res.getString("formlabel.actionfilter") %>' />
@@ -240,12 +249,12 @@ POSSIBILITY OF SUCH DAMAGE.
 	 </liferay-ui:search-container-results>
 	 
 	 <liferay-ui:search-container-row className="com.mpwc.model.Contacto" keyProperty="contactoId" modelVar="contacto">
-	 	<liferay-ui:search-container-column-text name="Firm Name" property="firmname" />
-	 	<liferay-ui:search-container-column-text name="Address" property="address" />
-	 	<liferay-ui:search-container-column-text name="Nif" property="nif" />
-	 	<liferay-ui:search-container-column-text name="Email" property="email" />
-	 	<liferay-ui:search-container-column-text name="City" property="city" />
-	 	<liferay-ui:search-container-column-text name="Country" property="country" />
+	 	<liferay-ui:search-container-column-text name='<%= res.getString("formlabel.firmname") %>' property="firmname" />
+	 	<liferay-ui:search-container-column-text name='<%= res.getString("formlabel.address") %>' property="address" />
+	 	<liferay-ui:search-container-column-text name='<%= res.getString("formlabel.nif") %>' property="nif" />
+	 	<liferay-ui:search-container-column-text name='<%= res.getString("formlabel.email") %>' property="email" />
+	 	<liferay-ui:search-container-column-text name='<%= res.getString("formlabel.city") %>' property="city" />
+	 	<liferay-ui:search-container-column-text name='<%= res.getString("formlabel.country") %>' property="country" />
 	 	<!--
 	 		<liferay-ui:search-container-column-jsp path="/jsp/list_actions.jsp" align="right" />
 	 	-->
