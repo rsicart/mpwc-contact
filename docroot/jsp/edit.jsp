@@ -62,19 +62,26 @@ ResourceBundle res = ResourceBundle.getBundle("content.Language-ext", new Locale
 %>
 
 <portlet:actionURL var="editContactoURL" name="editContact">
-    <portlet:param name="mvcPath" value="/jsp/list.jsp" />
+    <portlet:param name="jspPage" value="/jsp/edit.jsp" />
     <portlet:param name="contactoId" value="<%= String.valueOf( c.getContactoId() ) %>" />
 </portlet:actionURL>
 
+<portlet:renderURL var="redirectURL">
+    <portlet:param name="jspPage" value="/jsp/view.jsp" />
+    <portlet:param name="contactoId" value="<%= String.valueOf( c.getContactoId() ) %>" />
+</portlet:renderURL>
+
 <aui:form action="<%= editContactoURL %>" method="post">
 	
-	<aui:input type="hidden" name="redirectURL" value="<%= renderResponse.createRenderURL().toString() %>"/>
+	<aui:input type="hidden" name="redirectURL" value="<%= redirectURL.toString() %>"/>
 
 	<aui:layout>
  		
  	<aui:column columnWidth="25" first="true">
  	
  		<aui:fieldset>
+ 		
+ 		<liferay-ui:error key="error-firmname-notvalid" message="error-firmname-notvalid" />
  		
 		<aui:input label='<%= res.getString("formlabel.firmname") %>' name="firmname" type="text" value="<%= c.getFirmname() %>" >
 			<aui:validator name="required" />
@@ -84,6 +91,8 @@ ResourceBundle res = ResourceBundle.getBundle("content.Language-ext", new Locale
 			</aui:validator>
 		</aui:input>
 		
+		<liferay-ui:error key="error-city-notvalid" message="error-city-notvalid" />
+		
 	    <aui:input label='<%= res.getString("formlabel.city") %>' name="city" type="text" value="<%= c.getCity() %>" >
 			<aui:validator name="required" />
 			<!-- Only allow alphabetical characters -->
@@ -91,6 +100,8 @@ ResourceBundle res = ResourceBundle.getBundle("content.Language-ext", new Locale
 				function(val, fieldNode, ruleValue) { var patt=/[a-zA-Z0-9 ,'-]{1,100}/g; return (patt.test(val) ) }
 			</aui:validator>
 		</aui:input>
+		
+		<liferay-ui:error key="error-country-notvalid" message="error-country-notvalid" />
 		
 		<aui:input label='<%= res.getString("formlabel.country") %>' name="country" type="text" value="<%= c.getCountry() %>" >
 			<aui:validator name="required" />
@@ -100,6 +111,8 @@ ResourceBundle res = ResourceBundle.getBundle("content.Language-ext", new Locale
 			</aui:validator>
 		</aui:input>
 		
+		<liferay-ui:error key="error-address-notvalid" message="error-address-notvalid" />
+		
 		<aui:input label='<%= res.getString("formlabel.address") %>' name="address" type="text" value="<%= c.getAddress() %>" >
 			<aui:validator name="required" />
 			<!-- Only allow alphabetical characters -->
@@ -108,13 +121,15 @@ ResourceBundle res = ResourceBundle.getBundle("content.Language-ext", new Locale
 			</aui:validator>
 		</aui:input>
 		
+		<liferay-ui:error key="error-zipcode-notvalid" message="error-zipcode-notvalid" />
+		
 		<aui:input label='<%= res.getString("formlabel.zipcode") %>' name="zipcode" type="text" value="<%= c.getZipcode() %>" >
 			<aui:validator name="required" />
-			<!-- Only allow alphabetical characters -->
+			<!-- Only allow numbers -->
      		<aui:validator name="digits" />
 		</aui:input>
 		
-
+		
 		
 		<aui:input label='<%= res.getString("formlabel.phone") %>' name="phone" type="text" value="<%= c.getPhone() %>" >
 			<!-- Only allow numbers -->
@@ -134,22 +149,31 @@ ResourceBundle res = ResourceBundle.getBundle("content.Language-ext", new Locale
 	
 		<aui:fieldset>
 		
+		<liferay-ui:error key="error-nif-notvalid" message="error-nif-notvalid" />
+		
 	    <aui:input label='<%= res.getString("formlabel.nif") %>' name="nif" type="text" value="<%= c.getNif() %>" >
 			<aui:validator name="required" />
 			<!-- Only allow alphabetical characters -->
      		<aui:validator name="alphanum" />
 		</aui:input>
+		
+		<liferay-ui:error key="error-email-notvalid" message="error-email-notvalid" />
+		
 	    <aui:input label='<%= res.getString("formlabel.email") %>' name="email" type="text" value="<%= c.getEmail() %>" >
 			<aui:validator name="required" />
 			<!-- Only allow email format -->
      		<aui:validator name="email" />
 		</aui:input>  
 		
+		<liferay-ui:error key="error-status-notvalid" message="error-status-notvalid" />
+		
 		<aui:select label='<%= res.getString("formlabel.status") %>' name="status">
 			<aui:option label='<%= res.getString("formlabel.option.active") %>' value="1" selected='<%= ( c.getContactoStatusId() > 0 && c.getContactoStatusId() == 1 ? true : false ) %>'></aui:option>
 			<aui:option label='<%= res.getString("formlabel.option.inactive") %>' value="2" selected='<%= ( c.getContactoStatusId() > 0 && c.getContactoStatusId() == 2 ? true : false ) %>'></aui:option>
 			<aui:option label='<%= res.getString("formlabel.option.bloqued") %>' value="3" selected='<%= ( c.getContactoStatusId() > 0 && c.getContactoStatusId() == 3 ? true : false ) %>'></aui:option>
 		</aui:select>  
+		
+		<liferay-ui:error key="error-ctype-notvalid" message="error-ctype-notvalid" />
 		
 		<aui:select label='<%= res.getString("formlabel.contacttype") %>' id="ctype" name="ctype">
 			<aui:option value="">
@@ -162,6 +186,8 @@ ResourceBundle res = ResourceBundle.getBundle("content.Language-ext", new Locale
 				<liferay-ui:message key="form-option-type-provider" />
 			</aui:option>
 		</aui:select>
+		
+		<liferay-ui:error key="error-comments-notvalid" message="error-comments-notvalid" />
 		
 		<aui:input type="textarea" name="comments" value="<%= c.getComments() %>" >
 			<!-- Only allow alphabetical characters -->

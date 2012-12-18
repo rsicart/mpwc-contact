@@ -49,6 +49,7 @@ import javax.portlet.PortletSession;
 import com.liferay.counter.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.util.bridges.mvc.MVCPortlet;
@@ -124,10 +125,21 @@ public class ContactPortlet extends MVCPortlet {
  			}
 
      	}
+     	else{
+     		//show errors
+     		if( firmname == null || firmname.isEmpty() ){ SessionErrors.add(actionRequest, "error-firmname-notvalid"); }
+         	if( email == null || email.isEmpty() || email.indexOf("@") > 1 || email.indexOf("@") == 0 ){ SessionErrors.add(actionRequest, "error-email-notvalid"); } 
+         	if( nif == null || nif.isEmpty() ){ SessionErrors.add(actionRequest, "error-nif-notvalid"); }
+         	if( city == null || city.isEmpty() ){ SessionErrors.add(actionRequest, "error-city-notvalid"); }
+         	if( country == null || country.isEmpty() ){ SessionErrors.add(actionRequest, "error-country-notvalid"); }
+         	if( address == null || address.isEmpty() ){ SessionErrors.add(actionRequest, "error-address-notvalid"); }
+         	if( zipcode == null || zipcode.isEmpty() ){ SessionErrors.add(actionRequest, "error-zipcode-notvalid"); }
+         	if( ctype == null || ctype.isEmpty() ){ SessionErrors.add(actionRequest, "error-ctype-notvalid"); }
+     	}
 
      	// gracefully redirecting to the default portlet view
      	String redirectURL = actionRequest.getParameter("redirectURL");
-     	actionResponse.sendRedirect(redirectURL);     	
+     	actionResponse.sendRedirect(redirectURL);
    }
    
    public void editContact(ActionRequest actionRequest, ActionResponse actionResponse)
@@ -154,17 +166,17 @@ public class ContactPortlet extends MVCPortlet {
 		    	Contacto c;
 				try {			
 					c = ContactoLocalServiceUtil.getContacto(contactoId);
-					if( firmname != null && !firmname.isEmpty() ){ c.setFirmname(firmname); }
-					if( nif != null && !nif.isEmpty() ){ c.setNif(nif); }
-					if( email != null && !email.isEmpty() && email.indexOf("@") > 0 ){ c.setEmail(email); }
+					if( firmname != null && !firmname.isEmpty() ){ c.setFirmname(firmname); } 					
+					if( nif != null && !nif.isEmpty() ){ c.setNif(nif); } 					
+					if( email != null && !email.isEmpty() && email.indexOf("@") > 0 ){ c.setEmail(email); } 					
 			    	if( phone != null && !phone.isEmpty() ){ c.setPhone(phone); }
 			    	if( status > 0 ){ c.setContactoStatusId(status); }
 			    	if( comments != null && !comments.isEmpty() ){ c.setComments(comments); }
-			    	if( city != null && !city.isEmpty() ){ c.setCity(city); }
-			    	if( country != null && !country.isEmpty() ){ c.setCountry(country); }
-			    	if( address != null && !address.isEmpty() ){ c.setAddress(address); }
-			    	if( zipcode != null && !zipcode.isEmpty() ){ c.setZipcode(zipcode); }
-			    	if( ctype != null && !ctype.isEmpty() ){ c.setCtype(ctype); }
+			    	if( city != null && !city.isEmpty() ){ c.setCity(city); }			    	
+			    	if( country != null && !country.isEmpty() ){ c.setCountry(country); }			    	
+			    	if( address != null && !address.isEmpty() ){ c.setAddress(address); }			    	
+			    	if( zipcode != null && !zipcode.isEmpty() ){ c.setZipcode(zipcode); }			    	
+			    	if( ctype != null && !ctype.isEmpty() ){ c.setCtype(ctype); }    	
 			    	if( phone2 != null && !phone2.isEmpty() ){ c.setPhone2(phone2); }
 			    	c.setModifiedDate(now);
 			    	ContactoLocalServiceUtil.updateContacto(c);
@@ -177,7 +189,7 @@ public class ContactPortlet extends MVCPortlet {
 	 	}
 	
 	 	// gracefully redirecting to the default portlet view
-	 	String redirectURL = actionRequest.getParameter("redirectURL");
+	 	String redirectURL = actionRequest.getParameter("redirectURL");	 	
 	 	actionResponse.sendRedirect(redirectURL);
    }
    
