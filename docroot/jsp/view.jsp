@@ -131,12 +131,16 @@ POSSIBILITY OF SUCH DAMAGE.
 		
 			<aui:input label='<%= res.getString("formlabel.firmname") %>' id="ftrfirmname" name="ftrfirmname" type="text" value="<%= ftrFirmname %>">
 				<!-- Only allow alphabetical characters -->
-	     		<aui:validator name="alpha" />
+	     		<aui:validator name="custom" errorMessage="error-character-not-valid">
+				    function(val, fieldNode, ruleValue) { var patt=/[a-zA-Z0-9 ,'-]{0,100}/g; return (patt.test(val) ) }
+				</aui:validator>
 			</aui:input>
 			
 			<aui:input label='<%= res.getString("formlabel.email") %>' id="ftremail" name="ftremail" type="text" value="<%= ftrEmail %>" >
 				<!-- Only allow email format -->
-	     		<aui:validator name="email" />
+	     		<aui:validator name="custom" errorMessage="error-character-not-valid">
+				    function(val, fieldNode, ruleValue) { var patt=/[a-zA-Z0-9 ,'-]{0,100}/g; return (patt.test(val) ) }
+				</aui:validator>
 			</aui:input>
 		
 		</aui:fieldset>
@@ -149,7 +153,9 @@ POSSIBILITY OF SUCH DAMAGE.
 		    
 		    <aui:input label='<%= res.getString("formlabel.address") %>' id="ftraddress" name="ftraddress" type="text" value="<%= ftrAddress %>">
 				<!-- Only allow alphabetical characters -->
-	     		<aui:validator name="alpha" />
+	     		<aui:validator name="custom" errorMessage="error-character-not-valid">
+				    function(val, fieldNode, ruleValue) { var patt=/[a-zA-Z0-9 ,'-]{0,100}/g; return (patt.test(val) ) }
+				</aui:validator>
 		    </aui:input>
 		    
 		    <aui:input label='<%= res.getString("formlabel.zipcode") %>' id="ftrzipcode" name="ftrzipcode" type="text" value="<%= ftrZipcode %>">
@@ -181,12 +187,16 @@ POSSIBILITY OF SUCH DAMAGE.
 		    
 		    <aui:input label='<%= res.getString("formlabel.city") %>' id="ftrcity" name="ftrcity" type="text" value="<%= ftrCity %>">
 				<!-- Only allow alphabetical characters -->
-	     		<aui:validator name="alpha" />
+	     		<aui:validator name="custom" errorMessage="error-character-not-valid">
+				    function(val, fieldNode, ruleValue) { var patt=/[a-zA-Z0-9 ,'-]{0,100}/g; return (patt.test(val) ) }
+				</aui:validator>
 		    </aui:input>
 		    
 		    <aui:input label='<%= res.getString("formlabel.country") %>' id="ftrcountry" name="ftrcountry" type="text" value="<%= ftrCountry %>">
 				<!-- Only allow alphabetical characters -->
-	     		<aui:validator name="alpha" />
+	     		<aui:validator name="custom" errorMessage="error-character-not-valid">
+				    function(val, fieldNode, ruleValue) { var patt=/[a-zA-Z0-9 ,'-]{0,100}/g; return (patt.test(val) ) }
+				</aui:validator>
 		    </aui:input>
 		
 		</aui:fieldset>

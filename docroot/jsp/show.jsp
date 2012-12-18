@@ -154,8 +154,6 @@ ResourceBundle res = ResourceBundle.getBundle("content.Language-ext", new Locale
 	 <liferay-ui:search-container-row className="com.mpwc.model.Project" keyProperty="projectId" modelVar="project">
 	 	<liferay-ui:search-container-column-text name='<%= res.getString("formlabel.name") %>' property="name" />
 	 	<liferay-ui:search-container-column-text name='<%= res.getString("formlabel.type") %>' property="type" />
-
-
 	 </liferay-ui:search-container-row>
 	 
 	 <liferay-ui:search-iterator />
