@@ -39,6 +39,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.mpwc.contact;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.portlet.ActionRequest;
@@ -50,6 +51,7 @@ import com.liferay.counter.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.util.bridges.mvc.MVCPortlet;
@@ -57,6 +59,7 @@ import com.mpwc.model.Contacto;
 import com.mpwc.model.Project;
 import com.mpwc.service.ContactoLocalServiceUtil;
 import com.mpwc.service.ProjectLocalServiceUtil;
+import com.mpwc.model.impl.ContactoImpl;
 
 /**
  * Portlet implementation class ContactPortlet
@@ -68,33 +71,50 @@ public class ContactPortlet extends MVCPortlet {
      	
     	ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
     	
-     	String firmname = actionRequest.getParameter("firmname");
-     	String nif = actionRequest.getParameter("nif");
-     	String email = actionRequest.getParameter("email");
-     	String phone = actionRequest.getParameter("phone");
-     	long status = Long.parseLong(actionRequest.getParameter("status"));
-     	String comments = actionRequest.getParameter("comments");
-     	String phone2 = actionRequest.getParameter("phone2");
-     	String city = actionRequest.getParameter("city");
-     	String country = actionRequest.getParameter("country");
-     	String address = actionRequest.getParameter("address");
-     	String zipcode = actionRequest.getParameter("zipcode");
-     	String ctype = actionRequest.getParameter("ctype");
+	 	String firmname = ParamUtil.getString(actionRequest,"firmname");
+	 	String nif = ParamUtil.getString(actionRequest,"nif");
+	 	String email = ParamUtil.getString(actionRequest,"email");
+	 	String phone = ParamUtil.getString(actionRequest,"phone");
+	 	long status = ParamUtil.getLong(actionRequest,"status");
+	 	String comments = ParamUtil.getString(actionRequest,"comments");
+	 	String phone2 = ParamUtil.getString(actionRequest,"phone2");
+	 	String city = ParamUtil.getString(actionRequest,"city");
+	 	String country = ParamUtil.getString(actionRequest,"country");
+	 	String address = ParamUtil.getString(actionRequest,"address");
+	 	String zipcode = ParamUtil.getString(actionRequest,"zipcode");
+	 	String ctype = ParamUtil.getString(actionRequest,"ctype");
+	 	
+	 	//create sample Contacto for validator
+	 	Contacto con = ContactoLocalServiceUtil.createContacto(0);
+	 	
+	 	//fill sample entity
+	 	con.setContactoId(1); //sample id
+	 	con.setFirmname(firmname);
+	 	con.setNif(nif);
+	 	con.setEmail(email);
+	 	con.setPhone(phone);
+	 	con.setContactoStatusId(status);
+	 	con.setComments(comments);
+	 	con.setAddress(address);
+	 	con.setCity(city);
+	 	con.setZipcode(zipcode);
+	 	con.setCountry(country);
+	 	con.setPhone2(phone2);
+	 	
+	 	//prepare error message array
+	 	ArrayList<String> errors = new ArrayList<String>();
+	 	
+	 	//pass sample contacto to validator
+	 	boolean valid = ContactoValidator.validate(con, errors);
      	
      	Date now = new Date();
      	
-     	if(		firmname != null && !firmname.isEmpty() &&
-     			email != null && !email.isEmpty() && email.indexOf("@") > 0 &&
-     			nif != null && !nif.isEmpty() &&
-     			city != null && !city.isEmpty() &&
-     			country != null && !country.isEmpty() &&
-     			address != null && !address.isEmpty() &&
-     			zipcode != null && !zipcode.isEmpty() &&
-     			ctype != null && !ctype.isEmpty()
-     		){
+     	//check required fields
+     	if(	valid ){
      		
  	    	Contacto c;
  			try {
+ 				//get real id
  				long contactoId = CounterLocalServiceUtil.increment(Contacto.class.getName());
  				c = ContactoLocalServiceUtil.createContacto(contactoId);
  				c.setFirmname(firmname);
@@ -123,61 +143,85 @@ public class ContactPortlet extends MVCPortlet {
  			} catch (SystemException e) {
  				System.out.println("addContacto exception:" + e.getMessage());
  			}
+ 			
+ 			//actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
+ 	     	// gracefully redirecting to the default portlet view
+ 	     	String redirectURL = actionRequest.getParameter("redirectURL");
+ 	     	actionResponse.sendRedirect(redirectURL);
 
      	}
      	else{
-     		//show errors
-     		if( firmname == null || firmname.isEmpty() ){ SessionErrors.add(actionRequest, "error-firmname-notvalid"); }
-         	if( email == null || email.isEmpty() || email.indexOf("@") > 1 || email.indexOf("@") == 0 ){ SessionErrors.add(actionRequest, "error-email-notvalid"); } 
-         	if( nif == null || nif.isEmpty() ){ SessionErrors.add(actionRequest, "error-nif-notvalid"); }
-         	if( city == null || city.isEmpty() ){ SessionErrors.add(actionRequest, "error-city-notvalid"); }
-         	if( country == null || country.isEmpty() ){ SessionErrors.add(actionRequest, "error-country-notvalid"); }
-         	if( address == null || address.isEmpty() ){ SessionErrors.add(actionRequest, "error-address-notvalid"); }
-         	if( zipcode == null || zipcode.isEmpty() ){ SessionErrors.add(actionRequest, "error-zipcode-notvalid"); }
-         	if( ctype == null || ctype.isEmpty() ){ SessionErrors.add(actionRequest, "error-ctype-notvalid"); }
-     	}
+     		//process errors
+            for (String error : errors) {
+                SessionErrors.add(actionRequest, error);
+            }
+            actionResponse.setRenderParameter("jspPage", "/jsp/add.jsp");
+        }
 
      	// gracefully redirecting to the default portlet view
-     	String redirectURL = actionRequest.getParameter("redirectURL");
-     	actionResponse.sendRedirect(redirectURL);
+     	//String redirectURL = actionRequest.getParameter("redirectURL");
+     	//actionResponse.sendRedirect(redirectURL);
    }
    
    public void editContact(ActionRequest actionRequest, ActionResponse actionResponse)
  	       throws IOException, PortletException {
  	
-	 	long contactoId = Long.valueOf( actionRequest.getParameter("contactoId") );
-	 	String firmname = actionRequest.getParameter("firmname");
-	 	String nif = actionRequest.getParameter("nif");
-	 	String email = actionRequest.getParameter("email");
-	 	String phone = actionRequest.getParameter("phone");
-	 	long status = Long.parseLong(actionRequest.getParameter("status"));
-	 	String comments = actionRequest.getParameter("comments");
-	 	String phone2 = actionRequest.getParameter("phone2");
-	 	String city = actionRequest.getParameter("city");
-	 	String country = actionRequest.getParameter("country");
-	 	String address = actionRequest.getParameter("address");
-	 	String zipcode = actionRequest.getParameter("zipcode");
-	 	String ctype = actionRequest.getParameter("ctype");
+	 	long contactoId = ParamUtil.getLong(actionRequest,"contactoId");
+	 	String firmname = ParamUtil.getString(actionRequest,"firmname");
+	 	String nif = ParamUtil.getString(actionRequest,"nif");
+	 	String email = ParamUtil.getString(actionRequest,"email");
+	 	String phone = ParamUtil.getString(actionRequest,"phone");
+	 	long status = ParamUtil.getLong(actionRequest,"status");
+	 	String comments = ParamUtil.getString(actionRequest,"comments");
+	 	String phone2 = ParamUtil.getString(actionRequest,"phone2");
+	 	String city = ParamUtil.getString(actionRequest,"city");
+	 	String country = ParamUtil.getString(actionRequest,"country");
+	 	String address = ParamUtil.getString(actionRequest,"address");
+	 	String zipcode = ParamUtil.getString(actionRequest,"zipcode");
+	 	String ctype = ParamUtil.getString(actionRequest,"ctype");
+	 	
+	 	//create sample Contacto
+	 	Contacto con = ContactoLocalServiceUtil.createContacto(contactoId);
+	 	//fill it
+	 	con.setContactoId(contactoId);
+	 	con.setFirmname(firmname);
+	 	con.setNif(nif);
+	 	con.setEmail(email);
+	 	con.setPhone(phone);
+	 	con.setContactoStatusId(status);
+	 	con.setComments(comments);
+	 	con.setAddress(address);
+	 	con.setCity(city);
+	 	con.setZipcode(zipcode);
+	 	con.setCountry(country);
+	 	con.setCtype(ctype);
+	 	con.setPhone2(phone2);
+	 	
+	 	//prepare error list and run validator
+	 	ArrayList<String> errors = new ArrayList<String>();
+	 	boolean valid = ContactoValidator.validate(con, errors);
 	 	
 	 	Date now = new Date();
 	 	
-	 	if( contactoId > 0 ){
+	 	if( contactoId > 0 && valid ){
 	 		
 		    	Contacto c;
 				try {			
 					c = ContactoLocalServiceUtil.getContacto(contactoId);
-					if( firmname != null && !firmname.isEmpty() ){ c.setFirmname(firmname); } 					
-					if( nif != null && !nif.isEmpty() ){ c.setNif(nif); } 					
-					if( email != null && !email.isEmpty() && email.indexOf("@") > 0 ){ c.setEmail(email); } 					
-			    	if( phone != null && !phone.isEmpty() ){ c.setPhone(phone); }
-			    	if( status > 0 ){ c.setContactoStatusId(status); }
-			    	if( comments != null && !comments.isEmpty() ){ c.setComments(comments); }
-			    	if( city != null && !city.isEmpty() ){ c.setCity(city); }			    	
-			    	if( country != null && !country.isEmpty() ){ c.setCountry(country); }			    	
-			    	if( address != null && !address.isEmpty() ){ c.setAddress(address); }			    	
-			    	if( zipcode != null && !zipcode.isEmpty() ){ c.setZipcode(zipcode); }			    	
-			    	if( ctype != null && !ctype.isEmpty() ){ c.setCtype(ctype); }    	
-			    	if( phone2 != null && !phone2.isEmpty() ){ c.setPhone2(phone2); }
+					//set properties
+					c.setFirmname(con.getFirmname());
+					c.setNif(con.getNif());
+					c.setEmail(con.getEmail());
+					c.setPhone(con.getPhone());
+					c.setContactoStatusId(con.getContactoStatusId());
+					c.setComments(con.getComments());
+					c.setCity(con.getCity());
+					c.setCountry(con.getCountry());
+					c.setAddress(con.getAddress());
+					c.setZipcode(con.getZipcode());
+					c.setCtype(con.getCtype());
+					c.setPhone2(con.getPhone2());
+					//set modification date
 			    	c.setModifiedDate(now);
 			    	ContactoLocalServiceUtil.updateContacto(c);
 				} catch (SystemException e) {
@@ -185,12 +229,22 @@ public class ContactPortlet extends MVCPortlet {
 				} catch (PortalException e) {
 					System.out.println("editContact exception:" + e.getMessage());
 				}
-	
+				
+				// gracefully redirecting to the default portlet view
+				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 	 	}
+	 	else{
+	 		//process errors
+            for (String error : errors) {
+                SessionErrors.add(actionRequest, error);
+            }
+            actionResponse.setRenderParameter("jspPage", "/jsp/edit.jsp");
+            actionResponse.setRenderParameter("contactoId", String.valueOf(contactoId));
+        }
 	
 	 	// gracefully redirecting to the default portlet view
-	 	String redirectURL = actionRequest.getParameter("redirectURL");	 	
-	 	actionResponse.sendRedirect(redirectURL);
+	 	//String redirectURL = actionRequest.getParameter("redirectURL");	 	
+	 	//actionResponse.sendRedirect(redirectURL);
    }
    
    public void deleteContact(ActionRequest actionRequest, ActionResponse actionResponse)
